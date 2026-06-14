@@ -1,14 +1,16 @@
 namespace OrderService.Domain.Entities;
 
-public class Order
+public sealed record Order
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
 
-    public string CustomerName { get; set; } = string.Empty;
+    public string UserName { get; init; } = string.Empty;
 
-    public decimal TotalAmount { get; set; }
+    public string ProductName { get; init; } = string.Empty;
+
+    public int Quantity { get; init; }
 
     public string Status { get; set; } = string.Empty;
 
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; init; }
 }

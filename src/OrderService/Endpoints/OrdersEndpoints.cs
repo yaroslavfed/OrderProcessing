@@ -3,7 +3,7 @@ using OrderService.Application.DTOs;
 using OrderService.Application.Services.OrdersService;
 using OrderService.Domain.Entities;
 
-namespace OrderService.Application.Endpoints;
+namespace OrderService.Endpoints;
 
 public static class OrdersEndpoints
 {

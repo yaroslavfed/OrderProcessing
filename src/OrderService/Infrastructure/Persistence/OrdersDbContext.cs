@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Order = OrderService.Domain.Entities.Order;
+using OrderService.Domain.Entities;
 
 namespace OrderService.Infrastructure.Persistence;
 
@@ -15,16 +15,28 @@ public class OrdersDbContext : DbContext
             {
                 entity.HasKey(x => x.Id);
 
-                entity.Property(x => x.CustomerName)
-                      .HasMaxLength(200)
-                      .IsRequired();
+                entity
+                    .Property(x => x.UserName)
+                    .HasMaxLength(200)
+                    .IsRequired();
 
-                entity.Property(x => x.Status)
-                      .HasMaxLength(50)
-                      .IsRequired();
+                entity
+                    .Property(x => x.ProductName)
+                    .HasMaxLength(200)
+                    .IsRequired();
 
-                entity.Property(x => x.TotalAmount)
-                      .HasPrecision(18, 2);
+                entity
+                    .Property(x => x.Quantity)
+                    .IsRequired();
+
+                entity
+                    .Property(x => x.Status)
+                    .HasMaxLength(50)
+                    .IsRequired();
+
+                entity
+                    .Property(x => x.CreatedAt)
+                    .IsRequired();
             }
         );
     }

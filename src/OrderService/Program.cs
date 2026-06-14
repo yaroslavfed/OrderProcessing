@@ -1,10 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using OrderService.Application.Endpoints;
-using OrderService.Application.Services.OrdersCache;
 using OrderService.Application.Services.OrdersService;
+using OrderService.Endpoints;
 using OrderService.Extensions;
 using OrderService.Infrastructure.Cache;
 using OrderService.Infrastructure.Persistence;
+using Shared.Messaging;
+using Shared.Messaging.Abstractions;
+using Shared.Messaging.RabbitMq;
 using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,8 +21,11 @@ builder.Services.AddDbContext<OrdersDbContext>(options =>
     }
 );
 
+builder.Services.AddRabbitMqMessaging(builder.Configuration);
+
 builder.Services.AddScoped<IOrdersService, OrdersService>();
 builder.Services.AddScoped<IOrdersCache, RedisOrdersCache>();
+
 builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
     {
         var connectionString = builder.Configuration["Redis:ConnectionString"];

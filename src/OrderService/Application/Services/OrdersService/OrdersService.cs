@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using Orders.Contracts.Events;
 using OrderService.Application.DTOs;
-using OrderService.Application.Services.OrdersCache;
+using OrderService.Infrastructure.Cache;
 using OrderService.Infrastructure.Persistence;
+using Shared.Messaging.Abstractions;
 using Order = OrderService.Domain.Entities.Order;
 
 namespace OrderService.Application.Services.OrdersService;
@@ -9,12 +11,14 @@ namespace OrderService.Application.Services.OrdersService;
 public sealed class OrdersService : IOrdersService
 {
     private readonly OrdersDbContext _dbContext;
-    private readonly IOrdersCache     _ordersCache;
+    private readonly IOrdersCache    _ordersCache;
+    private readonly IEventPublisher _eventPublisher;
 
-    public OrdersService(OrdersDbContext dbContext, IOrdersCache ordersCache)
+    public OrdersService(OrdersDbContext dbContext, IOrdersCache ordersCache, IEventPublisher eventPublisher)
     {
         _dbContext = dbContext;
         _ordersCache = ordersCache;
+        _eventPublisher = eventPublisher;
     }
 
     public async Task<Order?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -48,14 +52,25 @@ public sealed class OrdersService : IOrdersService
         var order = new Order
         {
             Id = Guid.NewGuid(),
-            CustomerName = request.CustomerName,
-            TotalAmount = request.TotalAmount,
+            UserName = request.UserName,
+            ProductName = request.ProductName,
+            Quantity = request.Quantity,
             Status = "Created",
-            CreatedAt = DateTime.UtcNow,
+            CreatedAt = DateTime.UtcNow
         };
 
         _dbContext.Orders.Add(order);
         await _dbContext.SaveChangesAsync(cancellationToken);
+
+        var orderCreatedEvent = new OrderCreatedEvent(
+            order.Id,
+            order.UserName,
+            order.ProductName,
+            order.Quantity,
+            order.CreatedAt
+        );
+
+        await _eventPublisher.PublishAsync(orderCreatedEvent, "order.created", cancellationToken);
 
         return order;
     }
@@ -75,6 +90,8 @@ public sealed class OrdersService : IOrdersService
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
+        await _ordersCache.RemoveAsync(id);
+
         return order;
     }
 
@@ -86,7 +103,10 @@ public sealed class OrdersService : IOrdersService
             return false;
 
         _dbContext.Orders.Remove(order);
+
         await _dbContext.SaveChangesAsync(cancellationToken);
+
+        await _ordersCache.RemoveAsync(id);
 
         return true;
     }

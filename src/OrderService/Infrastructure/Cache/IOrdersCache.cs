@@ -1,6 +1,6 @@
 ﻿using OrderService.Domain.Entities;
 
-namespace OrderService.Application.Services.OrdersCache;
+namespace OrderService.Infrastructure.Cache;
 
 public interface IOrdersCache
 {

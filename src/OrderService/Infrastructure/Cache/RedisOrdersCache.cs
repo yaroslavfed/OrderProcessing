@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using OrderService.Application.Services.OrdersCache;
 using StackExchange.Redis;
 using Order = OrderService.Domain.Entities.Order;
 

@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
-        <UserSecretsId>dotnet-NotificationService-d73ed829-d718-4cbc-8cbb-1f74e861ef1f</UserSecretsId>
+        <UserSecretsId>dotnet-PaymentService-b5d02293-1899-47ad-90a4-609101af502c</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>

@@ -2,5 +2,12 @@
   <Folder Name="/src/">
     <Project Path="src/NotificationService/NotificationService.csproj" />
     <Project Path="src/OrderService/OrderService.csproj" />
+    <Project Path="src/PaymentService/PaymentService.csproj" />
+  </Folder>
+  <Folder Name="/src/Contracts/">
+    <Project Path="src/Contracts/Orders.Contracts/Orders.Contracts.csproj" />
+  </Folder>
+  <Folder Name="/src/Shared/">
+    <Project Path="src/Shared/Shared.Messaging/Shared.Messaging.csproj" />
   </Folder>
 </Solution>
